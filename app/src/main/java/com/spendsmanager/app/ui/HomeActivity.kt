@@ -2,6 +2,8 @@ package com.spendsmanager.app.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -59,7 +61,7 @@ class HomeActivity : AppCompatActivity() {
             balances[acc.id] = db.getAccountBalance(acc.id)
         }
         adapter.notifyDataSetChanged()
-        findViewById<TextView>(R.id.txtEmpty).visibility = if (accounts.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
+        findViewById<LinearLayout>(R.id.txtEmpty).visibility = if (accounts.isEmpty()) View.VISIBLE else View.GONE
         findViewById<TextView>(R.id.txtAccountCount).text = "${accounts.size} حساب"
     }
 

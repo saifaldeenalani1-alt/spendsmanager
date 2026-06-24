@@ -2,6 +2,8 @@ package com.spendsmanager.app.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -68,6 +70,6 @@ class AccountDetailActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.txtBalance).text = String.format("%.0f د.ع", balance)
         findViewById<TextView>(R.id.txtIncome).text = String.format("%.0f د.ع", totalIncome)
         findViewById<TextView>(R.id.txtExpense).text = String.format("%.0f د.ع", totalExpense)
-        findViewById<TextView>(R.id.txtEmpty).visibility = if (transactions.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
+        findViewById<LinearLayout>(R.id.txtEmpty).visibility = if (transactions.isEmpty()) View.VISIBLE else View.GONE
     }
 }
