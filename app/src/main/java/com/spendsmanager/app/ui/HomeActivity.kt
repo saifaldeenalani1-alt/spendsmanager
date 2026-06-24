@@ -90,32 +90,4 @@ class HomeActivity : AppCompatActivity() {
             .setNegativeButton("إلغاء", null)
             .show()
     }
-
-    private fun exportDatabase(uri: Uri) {
-        try {
-            val data = db.exportDatabase()
-            contentResolver.openOutputStream(uri)?.use { it.write(data) }
-            Toast.makeText(this, "تم تصدير النسخة الاحتياطية", Toast.LENGTH_SHORT).show()
-        } catch (e: Exception) {
-            Toast.makeText(this, "فشل التصدير: ${e.message}", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun importDatabase(uri: Uri) {
-        AlertDialog.Builder(this)
-            .setTitle("استيراد نسخة احتياطية")
-            .setMessage("سيتم استبدال جميع البيانات الحالية. هل أنت متأكد؟")
-            .setPositiveButton("تأكيد") { _, _ ->
-                try {
-                    val data = contentResolver.openInputStream(uri)?.use { it.readBytes() } ?: return@setPositiveButton
-                    db.importDatabase(data)
-                    loadAccounts()
-                    Toast.makeText(this, "تم استيراد النسخة الاحتياطية", Toast.LENGTH_SHORT).show()
-                } catch (e: Exception) {
-                    Toast.makeText(this, "فشل الاستيراد: ${e.message}", Toast.LENGTH_LONG).show()
-                }
-            }
-            .setNegativeButton("إلغاء", null)
-            .show()
-    }
 }
