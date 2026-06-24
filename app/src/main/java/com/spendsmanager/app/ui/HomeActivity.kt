@@ -1,15 +1,11 @@
 package com.spendsmanager.app.ui
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
@@ -17,7 +13,6 @@ import com.spendsmanager.app.R
 import com.spendsmanager.app.adapter.AccountAdapter
 import com.spendsmanager.app.data.Account
 import com.spendsmanager.app.data.DatabaseHelper
-import java.io.File
 
 class HomeActivity : AppCompatActivity() {
     private lateinit var db: DatabaseHelper
@@ -26,30 +21,29 @@ class HomeActivity : AppCompatActivity() {
     private val accounts = mutableListOf<Account>()
     private val balances = mutableMapOf<Long, Double>()
 
-    private val exportLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("application/octet-stream")) { uri ->
-        if (uri != null) exportDatabase(uri)
-    }
-
-    private val importLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        if (uri != null) importDatabase(uri)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
-        db = DatabaseHelper(this)
-        recyclerView = findViewById(R.id.recyclerAccounts)
-        adapter = AccountAdapter(accounts, balances,
-            onClick = { acc -> openAccount(acc) },
-            onLongClick = { acc -> deleteAccount(acc) }
-        )
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
+        try {
+            setContentView(R.layout.activity_home)
+            db = DatabaseHelper(this)
+            recyclerView = findViewById(R.id.recyclerAccounts)
+            adapter = AccountAdapter(accounts, balances,
+                onClick = { acc -> openAccount(acc) },
+                onLongClick = { acc -> deleteAccount(acc) }
+            )
+            recyclerView.layoutManager = LinearLayoutManager(this)
+            recyclerView.adapter = adapter
 
-        findViewById<MaterialButton>(R.id.btnAddAccount).setOnClickListener { addAccount() }
-        findViewById<MaterialButton>(R.id.btnReports).setOnClickListener { reports() }
-        findViewById<MaterialButton>(R.id.btnExport).setOnClickListener { exportLauncher.launch("spendsmanager_backup.db") }
-        findViewById<MaterialButton>(R.id.btnImport).setOnClickListener { importLauncher.launch(arrayOf("application/octet-stream", "application/x-sqlite3")) }
+            findViewById<MaterialButton>(R.id.btnAddAccount).setOnClickListener { addAccount() }
+            findViewById<MaterialButton>(R.id.btnReports).setOnClickListener { reports() }
+        } catch (e: Exception) {
+            val msg = "${e.javaClass.simpleName}: ${e.message}"
+            android.app.AlertDialog.Builder(this)
+                .setTitle("خطأ")
+                .setMessage(msg)
+                .setPositiveButton("إغلاق") { _, _ -> finish() }
+                .show()
+        }
     }
 
     override fun onResume() {
