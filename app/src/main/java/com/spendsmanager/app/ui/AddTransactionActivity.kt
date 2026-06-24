@@ -3,7 +3,8 @@ package com.spendsmanager.app.ui
 import android.app.DatePickerDialog
 import android.graphics.Color
 import android.os.Bundle
-import android.widget.*
+import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.button.MaterialButton
@@ -28,15 +29,11 @@ class AddTransactionActivity : AppCompatActivity() {
         val edtDesc = findViewById<EditText>(R.id.edtDescription)
         val btnIncome = findViewById<MaterialButton>(R.id.btnIncome)
         val btnExpense = findViewById<MaterialButton>(R.id.btnExpense)
-        val flowCategories = findViewById<LinearLayout>(R.id.flowCategories)
-        val cardCategories = findViewById<com.google.android.material.card.MaterialCardView>(R.id.cardCategories)
         val txtDate = findViewById<TextView>(R.id.txtDate)
-        val btnSave = findViewById<com.google.android.material.button.MaterialButton>(R.id.btnSaveTransaction)
+        val btnSave = findViewById<MaterialButton>(R.id.btnSaveTransaction)
 
         val incomeColor = ContextCompat.getColor(this, R.color.income)
         val expenseColor = ContextCompat.getColor(this, R.color.expense)
-        val incomeLight = ContextCompat.getColor(this, R.color.incomeLight)
-        val expenseLight = ContextCompat.getColor(this, R.color.expenseLight)
 
         fun updateTypeButtons() {
             val isIncome = selectedType == "وارد"
@@ -44,7 +41,6 @@ class AddTransactionActivity : AppCompatActivity() {
             btnIncome.setTextColor(if (isIncome) Color.WHITE else incomeColor)
             btnExpense.setBackgroundColor(if (!isIncome) expenseColor else Color.TRANSPARENT)
             btnExpense.setTextColor(if (!isIncome) Color.WHITE else expenseColor)
-            cardCategories.visibility = if (!isIncome) android.view.View.VISIBLE else android.view.View.GONE
         }
 
         btnIncome.setOnClickListener {
@@ -54,20 +50,6 @@ class AddTransactionActivity : AppCompatActivity() {
         btnExpense.setOnClickListener {
             selectedType = "مصروف"
             updateTypeButtons()
-        }
-
-        val categories = db.getCategories()
-        val catChips = mutableListOf<RadioButton>()
-        for ((name, icon) in categories) {
-            val chip = RadioButton(this).apply {
-                text = "$icon $name"
-                tag = name
-                setOnClickListener {
-                    catChips.forEach { it.isChecked = it == this }
-                }
-            }
-            flowCategories.addView(chip)
-            catChips.add(chip)
         }
 
         updateTypeButtons()
@@ -94,16 +76,14 @@ class AddTransactionActivity : AppCompatActivity() {
                 edtAmount.error = "الرجاء إدخال مبلغ صحيح"
                 return@setOnClickListener
             }
-            val cat = catChips.find { it.isChecked }?.tag?.toString() ?: ""
             db.insertTransaction(Transaction(
                 accountId = accountId,
                 type = selectedType,
                 amount = amount,
-                category = cat,
                 description = edtDesc.text.toString().trim(),
                 date = selectedDate
             ))
-            Toast.makeText(this, "تم التسجيل", Toast.LENGTH_SHORT).show()
+            setResult(RESULT_OK)
             finish()
         }
     }

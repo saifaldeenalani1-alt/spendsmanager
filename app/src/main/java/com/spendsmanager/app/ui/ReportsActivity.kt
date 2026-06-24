@@ -47,43 +47,20 @@ class ReportsActivity : AppCompatActivity() {
         val expense = db.getTotalExpenseForMonth(ym)
         val balance = income - expense
 
-        findViewById<TextView>(R.id.txtTotalIncome).text = String.format("%.2f د.ع", income)
-        findViewById<TextView>(R.id.txtTotalExpense).text = String.format("%.2f د.ع", expense)
-        findViewById<TextView>(R.id.txtNetBalance).text = String.format("%.2f د.ع", balance)
-
-        val catLayout = findViewById<LinearLayout>(R.id.layoutCategories)
-        catLayout.removeAllViews()
-        val cats = db.getCategoryTotalsForMonth(ym)
-        if (cats.isEmpty()) {
-            catLayout.addView(TextView(this).apply {
-                text = "لا توجد مصروفات مصنفة لهذا الشهر"
-                textAlignment = TextView.TEXT_ALIGNMENT_CENTER
-            })
-        }
-        for ((cat, _, total) in cats) {
-            val row = LinearLayout(this).apply {
-                orientation = LinearLayout.HORIZONTAL
-                setPadding(0, 8, 0, 8)
-            }
-            row.addView(TextView(this).apply {
-                text = cat
-                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-            })
-            row.addView(TextView(this).apply {
-                text = String.format("%.2f د.ع", total)
-                textAlignment = TextView.TEXT_ALIGNMENT_VIEW_END
-            })
-            catLayout.addView(row)
-        }
+        findViewById<TextView>(R.id.txtTotalIncome).text = String.format("%.0f د.ع", income)
+        findViewById<TextView>(R.id.txtTotalExpense).text = String.format("%.0f د.ع", expense)
+        findViewById<TextView>(R.id.txtNetBalance).text = String.format("%.0f د.ع", balance)
 
         val transactions = db.getAllTransactionsForMonth(ym)
         val txnLayout = findViewById<LinearLayout>(R.id.layoutTransactions)
         txnLayout.removeAllViews()
+
         if (transactions.isEmpty()) {
             txnLayout.addView(TextView(this).apply {
                 text = "لا توجد معاملات لهذا الشهر"
                 textAlignment = TextView.TEXT_ALIGNMENT_CENTER
                 setPadding(0, 16, 0, 16)
+                setTextColor(ContextCompat.getColor(this@ReportsActivity, R.color.textSecondary))
             })
         }
         for (t in transactions) {
@@ -94,14 +71,15 @@ class ReportsActivity : AppCompatActivity() {
             val accName = db.getAccountName(t.accountId)
             val sign = if (t.type == "مصروف") "-" else "+"
             row.addView(TextView(this).apply {
-                text = "${t.date} | $accName | ${t.category}"
+                text = "${t.date} | $accName"
                 layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
                 textSize = 13f
             })
             row.addView(TextView(this).apply {
-                text = "$sign${String.format("%.2f", t.amount)}"
+                text = "$sign${String.format("%.0f", t.amount)}"
                 setTextColor(ContextCompat.getColor(this@ReportsActivity, if (t.type == "مصروف") R.color.expense else R.color.income))
                 textSize = 14f
+                textStyle = android.graphics.Typeface.BOLD
             })
             txnLayout.addView(row)
         }

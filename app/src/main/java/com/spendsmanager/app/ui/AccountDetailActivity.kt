@@ -2,12 +2,13 @@ package com.spendsmanager.app.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.spendsmanager.app.R
 import com.spendsmanager.app.adapter.TransactionAdapter
 import com.spendsmanager.app.data.DatabaseHelper
@@ -18,6 +19,10 @@ class AccountDetailActivity : AppCompatActivity() {
     private lateinit var adapter: TransactionAdapter
     private val transactions = mutableListOf<Transaction>()
     private var accountId: Long = 0
+
+    private val addTransactionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == RESULT_OK) loadData()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +41,8 @@ class AccountDetailActivity : AppCompatActivity() {
         })
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
-        findViewById<Button>(R.id.btnAddTransaction).setOnClickListener {
-            startActivity(Intent(this, AddTransactionActivity::class.java).apply {
+        findViewById<MaterialButton>(R.id.btnAddTransaction).setOnClickListener {
+            addTransactionLauncher.launch(Intent(this, AddTransactionActivity::class.java).apply {
                 putExtra("accountId", accountId)
             })
         }
@@ -60,9 +65,9 @@ class AccountDetailActivity : AppCompatActivity() {
         val balance = db.getAccountBalance(accountId)
         val totalIncome = transactions.filter { it.type == "وارد" }.sumOf { it.amount }
         val totalExpense = transactions.filter { it.type == "مصروف" }.sumOf { it.amount }
-        findViewById<TextView>(R.id.txtBalance).text = String.format("%.2f د.ع", balance)
-        findViewById<TextView>(R.id.txtIncome).text = String.format("%.2f د.ع", totalIncome)
-        findViewById<TextView>(R.id.txtExpense).text = String.format("%.2f د.ع", totalExpense)
+        findViewById<TextView>(R.id.txtBalance).text = String.format("%.0f د.ع", balance)
+        findViewById<TextView>(R.id.txtIncome).text = String.format("%.0f د.ع", totalIncome)
+        findViewById<TextView>(R.id.txtExpense).text = String.format("%.0f د.ع", totalExpense)
         findViewById<TextView>(R.id.txtEmpty).visibility = if (transactions.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
     }
 }

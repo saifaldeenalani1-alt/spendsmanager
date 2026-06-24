@@ -19,7 +19,6 @@ class TransactionAdapter(
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val typeIndicator: LinearLayout = view.findViewById(R.id.typeIndicator)
         val icon: TextView = view.findViewById(R.id.txtTxnIcon)
-        val category: TextView = view.findViewById(R.id.txtCategory)
         val description: TextView = view.findViewById(R.id.txtDescription)
         val date: TextView = view.findViewById(R.id.txtDate)
         val amount: TextView = view.findViewById(R.id.txtAmount)
@@ -43,19 +42,11 @@ class TransactionAdapter(
         val lightColor = if (isExpense) expenseLight else incomeLight
 
         h.typeIndicator.setBackgroundColor(color)
-        val bg = h.typeIndicator.background as? GradientDrawable
-        if (bg != null) {
-            bg.setCornerRadii(floatArrayOf(4f, 4f, 0f, 0f, 4f, 4f, 0f, 0f))
-        }
 
         h.icon.text = if (isExpense) "🔻" else "🔺"
         h.icon.setBackgroundColor(lightColor)
 
-        h.category.text = t.category.ifEmpty { if (isExpense) "مصروف" else "وارد" }
-        h.category.setBackgroundColor(lightColor)
-        h.category.setTextColor(color)
-
-        h.description.text = t.description.ifEmpty { "بدون وصف" }
+        h.description.text = t.description.ifEmpty { if (isExpense) "مصروف" else "وارد" }
         h.date.text = t.date.replace("-", "/")
         h.amount.text = "${if (isExpense) "−" else "+"}${String.format("%.0f", t.amount)}"
         h.amount.setTextColor(color)

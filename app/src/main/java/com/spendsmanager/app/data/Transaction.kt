@@ -5,7 +5,6 @@ data class Transaction(
     var accountId: Long = 0,
     var type: String = "مصروف",
     var amount: Double = 0.0,
-    var category: String = "",
     var description: String = "",
     var date: String = ""
 )

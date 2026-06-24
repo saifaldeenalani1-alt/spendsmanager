@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#1565C0</color>
-    <color name="primaryDark">#0D47A1</color>
+    <color name="primary">#1A237E</color>
+    <color name="primaryDark">#000051</color>
+    <color name="primaryLight">#534BAE</color>
     <color name="accent">#FF6F00</color>
     <color name="income">#2E7D32</color>
     <color name="incomeLight">#E8F5E9</color>
     <color name="expense">#C62828</color>
     <color name="expenseLight">#FFEBEE</color>
-    <color name="bgLight">#F0F2F5</color>
+    <color name="bgLight">#F5F5FA</color>
     <color name="surface">#FFFFFF</color>
     <color name="textPrimary">#1B1B1F</color>
     <color name="textSecondary">#6B6B73</color>
     <color name="onPrimary">#FFFFFF</color>
-    <color name="divider">#E0E0E0</color>
+    <color name="divider">#E8E8EE</color>
+    <color name="cardStroke">#E0E0E8</color>
 </resources>

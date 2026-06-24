@@ -12,10 +12,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null
 
     companion object {
         private const val DB_NAME = "spendsmanager.db"
-        private const val DB_VERSION = 1
+        private const val DB_VERSION = 2
         private const val TABLE_ACCOUNTS = "accounts"
         private const val TABLE_TRANSACTIONS = "transactions"
-        private const val TABLE_CATEGORIES = "categories"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -35,37 +34,22 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null
                 account_id INTEGER NOT NULL,
                 type TEXT NOT NULL,
                 amount REAL NOT NULL,
-                category TEXT DEFAULT '',
                 description TEXT DEFAULT '',
                 date TEXT NOT NULL,
                 FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE
             )
         """)
-        db.execSQL("""
-            CREATE TABLE $TABLE_CATEGORIES (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                icon TEXT DEFAULT '📌'
-            )
-        """)
-        insertDefaultCategories(db)
     }
 
-    override fun onUpgrade(db: SQLiteDatabase, oldVer: Int, newVer: Int) {}
-
-    private fun insertDefaultCategories(db: SQLiteDatabase) {
-        val cats = listOf(
-            "🍽️|طعام", "🚗|مواصلات", "💡|فواتير", "🏠|إيجار",
-            "💊|صحة", "🎮|ترفيه", "👕|ملابس", "📚|تعليم", "📱|اتصالات", "📌|أخرى"
-        )
-        for (c in cats) {
-            val parts = c.split("|")
-            val cv = ContentValues().apply {
-                put("icon", parts[0])
-                put("name", parts[1])
-            }
-            db.insert(TABLE_CATEGORIES, null, cv)
+    override fun onUpgrade(db: SQLiteDatabase, oldVer: Int, newVer: Int) {
+        if (oldVer < 2) {
+            db.execSQL("ALTER TABLE $TABLE_TRANSACTIONS DROP COLUMN category")
         }
+    }
+
+    override fun onConfigure(db: SQLiteDatabase) {
+        super.onConfigure(db)
+        db.setForeignKeyConstraintsEnabled(true)
     }
 
     private fun now(): String = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).format(Date())
@@ -112,7 +96,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null
             put("account_id", t.accountId)
             put("type", t.type)
             put("amount", t.amount)
-            put("category", t.category)
             put("description", t.description)
             put("date", t.date)
         }
@@ -133,9 +116,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null
                 accountId = cursor.getLong(1),
                 type = cursor.getString(2),
                 amount = cursor.getDouble(3),
-                category = cursor.getString(4),
-                description = cursor.getString(5),
-                date = cursor.getString(6)
+                description = cursor.getString(4),
+                date = cursor.getString(5)
             ))
         }
         cursor.close()
@@ -173,17 +155,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null
         writableDatabase.delete(TABLE_TRANSACTIONS, "id = ?", arrayOf(id.toString()))
     }
 
-    fun getCategories(): List<Pair<String, String>> {
-        val db = readableDatabase
-        val cursor = db.query(TABLE_CATEGORIES, null, null, null, null, null, null)
-        val list = mutableListOf<Pair<String, String>>()
-        while (cursor.moveToNext()) {
-            list.add(Pair(cursor.getString(1), cursor.getString(2)))
-        }
-        cursor.close()
-        return list
-    }
-
     fun getTotalIncomeForMonth(yearMonth: String): Double {
         val db = readableDatabase
         val cursor = db.rawQuery(
@@ -208,20 +179,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null
         return total
     }
 
-    fun getCategoryTotalsForMonth(yearMonth: String): List<Triple<String, String, Double>> {
-        val db = readableDatabase
-        val cursor = db.rawQuery(
-            "SELECT category, COALESCE(SUM(amount),0) FROM $TABLE_TRANSACTIONS WHERE type='مصروف' AND category!='' AND date LIKE ? GROUP BY category ORDER BY SUM(amount) DESC",
-            arrayOf("$yearMonth%")
-        )
-        val list = mutableListOf<Triple<String, String, Double>>()
-        while (cursor.moveToNext()) {
-            list.add(Triple(cursor.getString(0), "", cursor.getDouble(1)))
-        }
-        cursor.close()
-        return list
-    }
-
     fun getAllTransactionsForMonth(yearMonth: String): List<Transaction> {
         val db = readableDatabase
         val cursor = db.query(
@@ -236,9 +193,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null
                 accountId = cursor.getLong(1),
                 type = cursor.getString(2),
                 amount = cursor.getDouble(3),
-                category = cursor.getString(4),
-                description = cursor.getString(5),
-                date = cursor.getString(6)
+                description = cursor.getString(4),
+                date = cursor.getString(5)
             ))
         }
         cursor.close()
@@ -252,5 +208,18 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null
         if (cursor.moveToFirst()) name = cursor.getString(0)
         cursor.close()
         return name
+    }
+
+    fun exportDatabase(): ByteArray {
+        val db = readableDatabase
+        val path = db.path
+        return java.io.File(path).readBytes()
+    }
+
+    fun importDatabase(data: ByteArray) {
+        val db = writableDatabase
+        val path = db.path
+        db.close()
+        java.io.File(path).writeBytes(data)
     }
 }
