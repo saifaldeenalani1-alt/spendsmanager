@@ -19,7 +19,7 @@
                 android:id="@+id/btnPrevMonth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="<"
+                android:text="←"
                 style="@style/Widget.Material3.Button.TonalButton" />
             <TextView
                 android:id="@+id/txtMonthTitle"
@@ -33,7 +33,7 @@
                 android:id="@+id/btnNextMonth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=">"
+                android:text="→"
                 style="@style/Widget.Material3.Button.TonalButton" />
         </LinearLayout>
 
