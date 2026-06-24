@@ -1,15 +1,20 @@
 package com.spendsmanager.app.ui
 
 import android.app.DatePickerDialog
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.google.android.material.button.MaterialButton
 import com.spendsmanager.app.R
 import com.spendsmanager.app.data.DatabaseHelper
 import com.spendsmanager.app.data.Transaction
 import java.util.Calendar
 
 class AddTransactionActivity : AppCompatActivity() {
+    private var selectedType = "مصروف"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_transaction)
@@ -21,10 +26,35 @@ class AddTransactionActivity : AppCompatActivity() {
 
         val edtAmount = findViewById<EditText>(R.id.edtAmount)
         val edtDesc = findViewById<EditText>(R.id.edtDescription)
-        val spinnerType = findViewById<Spinner>(R.id.spinnerType)
+        val btnIncome = findViewById<MaterialButton>(R.id.btnIncome)
+        val btnExpense = findViewById<MaterialButton>(R.id.btnExpense)
         val flowCategories = findViewById<LinearLayout>(R.id.flowCategories)
+        val cardCategories = findViewById<com.google.android.material.card.MaterialCardView>(R.id.cardCategories)
         val txtDate = findViewById<TextView>(R.id.txtDate)
-        val btnSave = findViewById<Button>(R.id.btnSaveTransaction)
+        val btnSave = findViewById<com.google.android.material.button.MaterialButton>(R.id.btnSaveTransaction)
+
+        val incomeColor = ContextCompat.getColor(this, R.color.income)
+        val expenseColor = ContextCompat.getColor(this, R.color.expense)
+        val incomeLight = ContextCompat.getColor(this, R.color.incomeLight)
+        val expenseLight = ContextCompat.getColor(this, R.color.expenseLight)
+
+        fun updateTypeButtons() {
+            val isIncome = selectedType == "وارد"
+            btnIncome.setBackgroundColor(if (isIncome) incomeColor else Color.TRANSPARENT)
+            btnIncome.setTextColor(if (isIncome) Color.WHITE else incomeColor)
+            btnExpense.setBackgroundColor(if (!isIncome) expenseColor else Color.TRANSPARENT)
+            btnExpense.setTextColor(if (!isIncome) Color.WHITE else expenseColor)
+            cardCategories.visibility = if (!isIncome) android.view.View.VISIBLE else android.view.View.GONE
+        }
+
+        btnIncome.setOnClickListener {
+            selectedType = "وارد"
+            updateTypeButtons()
+        }
+        btnExpense.setOnClickListener {
+            selectedType = "مصروف"
+            updateTypeButtons()
+        }
 
         val categories = db.getCategories()
         val catChips = mutableListOf<RadioButton>()
@@ -40,14 +70,7 @@ class AddTransactionActivity : AppCompatActivity() {
             catChips.add(chip)
         }
 
-        var selectedType = "مصروف"
-        spinnerType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(p: AdapterView<*>?, v: android.view.View?, pos: Int, id: Long) {
-                selectedType = if (pos == 0) "مصروف" else "وارد"
-                flowCategories.visibility = if (selectedType == "مصروف") android.view.View.VISIBLE else android.view.View.GONE
-            }
-            override fun onNothingSelected(p: AdapterView<*>?) {}
-        }
+        updateTypeButtons()
 
         val cal = Calendar.getInstance()
         val dateStr = String.format("%04d-%02d-%02d", cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH))

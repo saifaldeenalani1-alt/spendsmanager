@@ -4,8 +4,17 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorAccent">@color/accent</item>
+        <item name="colorOnPrimary">@color/onPrimary</item>
         <item name="android:windowBackground">@color/bgLight</item>
         <item name="android:statusBarColor">@color/primaryDark</item>
         <item name="android:navigationBarColor">@color/bgLight</item>
+        <item name="materialCardViewStyle">@style/CardModern</item>
+    </style>
+
+    <style name="CardModern" parent="Widget.Material3.CardView.Filled">
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="contentPadding">0dp</item>
     </style>
 </resources>

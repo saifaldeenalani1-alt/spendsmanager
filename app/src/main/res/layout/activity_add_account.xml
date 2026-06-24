@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -10,7 +11,8 @@
         android:layout_height="wrap_content"
         android:hint="اسم الحساب"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="16dp"
+        app:startIconDrawable="@android:drawable/ic_menu_edit">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edtAccountName"
             android:layout_width="match_parent"
@@ -28,15 +30,17 @@
     <Spinner
         android:id="@+id/spinnerType"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginBottom="16dp" />
+        android:layout_height="52dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_summary_card" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="الرصيد الابتدائي"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-        android:layout_marginBottom="32dp">
+        android:layout_marginBottom="32dp"
+        app:startIconDrawable="@android:drawable/ic_menu_gallery">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edtInitialBalance"
             android:layout_width="match_parent"
@@ -44,11 +48,11 @@
             android:inputType="numberDecimal" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSaveAccount"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="52dp"
         android:text="حفظ الحساب"
-        style="@style/Widget.Material3.Button.TonalButton" />
+        android:textSize="16sp" />
 
 </LinearLayout>

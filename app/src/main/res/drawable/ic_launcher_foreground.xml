@@ -4,21 +4,15 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- Receipt body -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M54,30 L54,78 M30,54 L78,54"
-        android:strokeWidth="8"
+        android:pathData="M34,24h40v54l-8,-6l-8,6l-8,-6l-8,6l-8,-6z"
+        android:strokeWidth="2"
         android:strokeColor="#FFFFFF" />
+    <!-- Lines on receipt -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M36,54 L72,54"
-        android:strokeWidth="14"
-        android:strokeColor="#FFFFFF"
-        android:strokeLineCap="round" />
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M54,36 L54,72"
-        android:strokeWidth="14"
-        android:strokeColor="#FFFFFF"
-        android:strokeLineCap="round" />
+        android:fillColor="#1565C0"
+        android:pathData="M42,36h24v3H42zM42,44h18v3H42zM42,52h24v3H42zM42,60h12v3H42z"
+        android:strokeWidth="0" />
 </vector>
