@@ -79,7 +79,7 @@ class ReportsActivity : AppCompatActivity() {
                 text = "$sign${String.format("%.0f", t.amount)}"
                 setTextColor(ContextCompat.getColor(this@ReportsActivity, if (t.type == "مصروف") R.color.expense else R.color.income))
                 textSize = 14f
-                textStyle = android.graphics.Typeface.BOLD
+                setTypeface(null, android.graphics.Typeface.BOLD)
             })
             txnLayout.addView(row)
         }
