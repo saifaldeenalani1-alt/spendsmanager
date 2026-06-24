@@ -14,9 +14,8 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 17
-      - uses: gradle/gradle-build-action@v3
-        with:
-          arguments: assembleDebug
+      - uses: gradle/actions/setup-gradle@v3
+      - run: ./gradlew assembleDebug
       - uses: actions/upload-artifact@v4
         with:
           name: app-debug
