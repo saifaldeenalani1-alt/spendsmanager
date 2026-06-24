@@ -9,12 +9,14 @@ import java.util.Date
 import java.util.Locale
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
+    private val appContext = context.applicationContext
 
     companion object {
         private const val DB_NAME = "spendsmanager.db"
         private const val DB_VERSION = 2
         private const val TABLE_ACCOUNTS = "accounts"
         private const val TABLE_TRANSACTIONS = "transactions"
+        private const val TABLE_CATEGORIES = "categories"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -43,7 +45,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null
 
     override fun onUpgrade(db: SQLiteDatabase, oldVer: Int, newVer: Int) {
         if (oldVer < 2) {
-            db.execSQL("ALTER TABLE $TABLE_TRANSACTIONS DROP COLUMN category")
+            db.execSQL("DROP TABLE IF EXISTS $TABLE_CATEGORIES")
+            db.execSQL("CREATE TABLE transactions_v2 (id INTEGER PRIMARY KEY AUTOINCREMENT, account_id INTEGER NOT NULL, type TEXT NOT NULL, amount REAL NOT NULL, description TEXT DEFAULT '', date TEXT NOT NULL)")
+            db.execSQL("INSERT INTO transactions_v2 (id, account_id, type, amount, description, date) SELECT id, account_id, type, amount, IFNULL(description, ''), date FROM $TABLE_TRANSACTIONS")
+            db.execSQL("DROP TABLE $TABLE_TRANSACTIONS")
+            db.execSQL("ALTER TABLE transactions_v2 RENAME TO $TABLE_TRANSACTIONS")
         }
     }
 
@@ -217,9 +223,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null
     }
 
     fun importDatabase(data: ByteArray) {
-        val db = writableDatabase
-        val path = db.path
-        db.close()
+        close()
+        appContext.deleteDatabase(DB_NAME)
+        val path = appContext.getDatabasePath(DB_NAME).absolutePath
         java.io.File(path).writeBytes(data)
     }
 }
