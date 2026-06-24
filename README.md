@@ -1,6 +1,6 @@
 # مدير المصروفات
 
-تطبيق فلاتر لتسجيل المصروفات والمدفوعات اليومية مع حسابات متعددة.
+تطبيق Android لتسجيل المصروفات والمدفوعات اليومية مع حسابات متعددة.
 
 ## الميزات
 - حسابات متعددة (شخصية + مشاريع)
@@ -10,11 +10,20 @@
 - تخزين محلي باستخدام SQLite
 - واجهة عربية كاملة
 
-## المتطلبات
-- Flutter SDK >= 3.0.0
-
-## التشغيل
+## بناء APK
 ```bash
-flutter pub get
-flutter run
+./gradlew assembleDebug
+```
+
+## هيكل المشروع
+```
+app/
+├── src/main/java/com/spendsmanager/app/
+│   ├── data/        # DatabaseHelper + model classes
+│   ├── ui/          # Activities
+│   └── adapter/     # RecyclerView adapters
+└── src/main/res/
+    ├── layout/      # XML layouts
+    ├── values/      # Strings, colors, themes
+    └── drawable/    # Icons and shapes
 ```

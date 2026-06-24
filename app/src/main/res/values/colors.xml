@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#1565C0</color>
+    <color name="primaryDark">#0D47A1</color>
+    <color name="accent">#FF6F00</color>
+    <color name="income">#4CAF50</color>
+    <color name="expense">#F44336</color>
+    <color name="bgLight">#F5F7FA</color>
+    <color name="textPrimary">#212121</color>
+    <color name="textSecondary">#757575</color>
+</resources>

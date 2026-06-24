@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MadearAlmasroofat">
+        <activity
+            android:name="com.spendsmanager.app.ui.HomeActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.spendsmanager.app.ui.AccountDetailActivity" android:parentActivityName="com.spendsmanager.app.ui.HomeActivity" />
+        <activity android:name="com.spendsmanager.app.ui.AddAccountActivity" android:windowSoftInputMode="adjustResize" />
+        <activity android:name="com.spendsmanager.app.ui.AddTransactionActivity" android:windowSoftInputMode="adjustResize" />
+        <activity android:name="com.spendsmanager.app.ui.ReportsActivity" android:parentActivityName="com.spendsmanager.app.ui.HomeActivity" />
+    </application>
+
+</manifest>
