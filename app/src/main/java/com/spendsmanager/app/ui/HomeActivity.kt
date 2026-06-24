@@ -43,7 +43,7 @@ class HomeActivity : AppCompatActivity() {
 
     private fun loadAccounts() {
         accounts.clear()
-        accounts.addAll(db.accounts)
+        accounts.addAll(db.getAccounts())
         balances.clear()
         for (acc in accounts) {
             balances[acc.id] = db.getAccountBalance(acc.id)

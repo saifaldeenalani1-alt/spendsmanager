@@ -26,7 +26,7 @@ class AddTransactionActivity : AppCompatActivity() {
         val txtDate = findViewById<TextView>(R.id.txtDate)
         val btnSave = findViewById<Button>(R.id.btnSaveTransaction)
 
-        val categories = db.categories
+        val categories = db.getCategories()
         val catChips = mutableListOf<RadioButton>()
         for ((name, icon) in categories) {
             val chip = RadioButton(this).apply {
